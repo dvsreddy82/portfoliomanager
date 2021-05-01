@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'uuoc10!bp#0bkgq2oyh3s@sd^8%^k3(q8poba@onqv)@9zy(*4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['india-portfolio-manager.herokuapp.com', 'localhost', '127.0.0.1']
 
 # Application definition
