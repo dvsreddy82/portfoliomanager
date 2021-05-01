@@ -1,2 +1,2 @@
-web: gunicorn portfoliomgr.wsgi --log-file -
+web: gunicorn --pythonpath src portfoliomgr.wsgi --log-file -
 
