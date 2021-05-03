@@ -182,6 +182,7 @@ MEDIA_URL = '/media/'
 HUEY = {
     'huey_class': 'huey.contrib.sql_huey.SqlHuey',
     'name': DATABASES['default']['NAME'],
+    'database': os.environ['SQLHUEY_URL'],
     'results': True,  # Store return values of tasks.
     'store_none': False,  # If a task returns None, do not save to results.
     'immediate': False,
