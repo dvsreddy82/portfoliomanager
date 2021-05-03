@@ -180,7 +180,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 HUEY = {
-    'huey_class': 'huey.contrib.SqlHuey',
+    'huey_class': 'huey.contrib.sql_huey.SqlHuey',
     'name': DATABASES['default']['NAME'],
     'results': True,  # Store return values of tasks.
     'store_none': False,  # If a task returns None, do not save to results.
