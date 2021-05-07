@@ -205,6 +205,7 @@ CHANNEL_LAYERS = {
     },
 }
 
+DEBUG_PROPAGATE_EXCEPTIONS = True
 
 django_heroku.settings(locals())
 
