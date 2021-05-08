@@ -1,4 +1,9 @@
 # Portfolio Manager
+## Live Server
+Example live server hosted at https://india-portfolio-manager.herokuapp.com/. Not optimized for mobile. Best viewed on Chrome browser.
+```diff
+! Please be kind enough and not do any delete operations
+```
 ## Intent
 
 To build a portfolio manager which can track and provide insights into a individual or family's financial interests
