@@ -149,10 +149,11 @@ def update_rsu():
 
 @db_periodic_task(crontab(minute='0', hour='10'))
 def update_mf_schemes():
-    print('Updating Mutual Fund Schemes')
-    set_task_state('update_mf_schemes', TaskState.Running)
+    print('Cleaning Mutual Fund Schemes')
     #update_mf_scheme_codes()
     clean_mutual_fund_table()
+    print('Updating Mutual Fund Schemes')
+    set_task_state('update_mf_schemes', TaskState.Running)
     update_mf_details()
     set_task_state('update_mf_schemes', TaskState.Successful)
 
