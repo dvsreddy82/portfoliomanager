@@ -1,25 +1,28 @@
 from django.urls import path
 
 from .views import (
-    RsuCreateView,
     RsuDeleteView,
     RsuListView,
     RsuDetailView,
     RsuUpdateView,
-    RsuVestDeleteView,
+    delete_vest,
     RsuVestDetailView,
     refresh_rsu_trans,
     refresh_rsu_vest_trans,
     show_vest_list,
     add_vest,
     update_vest,
-    CurrentRsus
+    add_vest_sell_trans,
+    show_vest_sell_trans,
+    delete_vest_sell_trans,
+    CurrentRsus,
+    create_rsu
 )
 
 app_name = 'rsus'
 urlpatterns = [
     path('', RsuListView.as_view(), name='rsu-list'),
-    path('create/', RsuCreateView.as_view(), name='rsu-create'),
+    path('create/', create_rsu, name='rsu-create'),
     path('refresh/', refresh_rsu_trans, name='rsu-refresh'),
     path('<id>/', RsuDetailView.as_view(), name='rsu-detail'),
     path('<id>/update/', RsuUpdateView.as_view(), name='rsu-update'),
@@ -28,8 +31,11 @@ urlpatterns = [
     path('<id>/vest/create', add_vest, name='rsu-add-vest'),
     path('<id>/vest/<vestid>/update', update_vest, name='rsu-update-vest'),
     path('<id>/vest/refresh/', refresh_rsu_vest_trans, name='rsu-vest-refresh'),
-    path('vest/<vestid>/delete', RsuVestDeleteView.as_view(), name='rsu-vest-delete'),
-    path('vest/<id>/', RsuVestDetailView.as_view(), name='rsu-vest-detail'),
+    path('<id>/vest/<vestid>/delete', delete_vest, name='rsu-vest-delete'),
+    path('<id>/vest/<vestid>/sell', add_vest_sell_trans, name='rsu-sell-vest-add'),
+    path('<id>/vest/<vestid>/sell_trans', show_vest_sell_trans, name='rsu-sell-vest'),
+    path('<id>/vest/<vestid>/delete/<selltransid>', delete_vest_sell_trans, name='rsu-sell-vest-delete'),
+    path('<id>/vest/<vestid>/', RsuVestDetailView.as_view(), name='rsu-vest-detail'),
 
     #path('<id>/upload-transactions/', upload_rsu_trans, name='rsu-upload-trans'),
     #path('<id>/add-contribution/', add_contribution, name='rsu-add-contribution'),

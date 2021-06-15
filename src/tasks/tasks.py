@@ -10,14 +10,14 @@ import datetime
 import time
 from django.db.models import Q
 from mftool import Mftool
-from common.helper import update_mf_scheme_codes, update_category_returns
+from common.helper import update_mf_scheme_codes, update_category_returns, update_mf_details
 from shared.utils import get_float_or_zero_from_string, get_float_or_none_from_string, get_int_or_none_from_string, get_date_or_none_from_string, convert_date_to_string, get_diff
 from common.bsestar import download_bsestar_schemes
 from shared.handle_get import *
 from shared.handle_chart_data import get_investment_data
 from pages.models import InvestmentData
 from mutualfunds.models import Folio, MutualFundTransaction
-from mutualfunds.mf_helper import mf_add_transactions
+from mutualfunds.mf_helper import mf_add_transactions, clean_mutual_fund_table
 import os
 import json
 from mutualfunds.mf_analyse import pull_ms, pull_category_returns, pull_blend, get_ms_code
@@ -39,6 +39,7 @@ from django.db import IntegrityError
 from common.helper import get_mf_passwords
 from .tasks_helper import *
 from common.nse import NSE
+from rsu.rsu_helper import update_rsu_latest_vals
 
 
 def set_task_state(name, state):
@@ -139,11 +140,20 @@ def update_espp():
         update_latest_vals(espp_obj)
     set_task_state('update_espp', TaskState.Successful)
 
+@db_periodic_task(crontab(minute='20', hour='*/2'))
+def update_rsu():
+    print('Updating RSU')
+    set_task_state('update_rsu', TaskState.Running)
+    update_rsu_latest_vals()
+    set_task_state('update_rsu', TaskState.Successful)
+
 @db_periodic_task(crontab(minute='0', hour='10'))
 def update_mf_schemes():
     print('Updating Mutual Fund Schemes')
     set_task_state('update_mf_schemes', TaskState.Running)
-    update_mf_scheme_codes()
+    #update_mf_scheme_codes()
+    clean_mutual_fund_table()
+    update_mf_details()
     set_task_state('update_mf_schemes', TaskState.Successful)
 
 @db_periodic_task(crontab(minute='55', hour='*/12'))

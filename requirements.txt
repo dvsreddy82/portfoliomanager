@@ -17,8 +17,8 @@ cssselect==1.1.0
 daphne==3.0.1
 dateutils==0.6.8
 dj-database-url==0.5.0
-Django==2.2.20
 django-heroku==0.0.0
+Django==2.2.24
 django-solo==1.1.5
 djangorestframework==3.11.2
 feedfinder2==0.0.4
@@ -71,7 +71,7 @@ toml==0.10.2
 tqdm==4.59.0
 Twisted==20.3.0
 txaio==20.12.1
-urllib3==1.25.9
+urllib3==1.26.5
 wcwidth==0.2.5
 whitenoise==5.2.0
 wrapt==1.12.1
