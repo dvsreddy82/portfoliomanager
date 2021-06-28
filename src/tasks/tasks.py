@@ -229,8 +229,8 @@ def clean_db():
     set_task_state('clean_db', TaskState.Successful)
 
 @task()
-def add_mf_transactions(broker, user, full_file_path):
-    mf_add_transactions(broker, user, full_file_path)
+def add_mf_transactions(broker, user, full_file_path, passwd=None):
+    mf_add_transactions(broker, user, full_file_path, passwd)
 
 @db_periodic_task(crontab(minute='*/30', hour='*/4'))
 def pull_mf_transactions():
@@ -911,9 +911,7 @@ def update_401k_month_end_vals():
 
 @db_periodic_task(crontab(minute='20', hour='*/6'))
 def check_updates_pending():
-    day = datetime.date.today().day
-    if day in [1,2,3,4,5]:
-        update_401k_month_end_vals()
+    update_401k_month_end_vals()
 
 
 '''
