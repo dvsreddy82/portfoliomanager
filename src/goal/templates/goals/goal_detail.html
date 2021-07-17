@@ -122,12 +122,17 @@
   var progress_data = {{progress_data|safe}}
   setProgressChart()
   var status_line = {{status_line|safe}}
-  setStatusLineChart(status_line)
+  rem = {{object.final_val}}-{{final_projection}};
+  if (rem < 0) {
+    rem = 0
+  }
+  status_line_vals = [{{ object.achieved_amt}},{{final_projection}}-{{ object.achieved_amt}},rem]
+  setStatusLineChart(status_line, status_line_vals)
 
-  function setStatusLineChart(status_line) {
+  function setStatusLineChart(status_line, status_line_vals) {
     colors = ['green','grey', 'red']
     div_parent_elem = document.getElementById("progressLine")
-
+    var width = 0;
     for (x in status_line) {
       entry = status_line[x]
       color = colors[x]
@@ -138,10 +143,19 @@
 
       // add the text node to the newly created div
       newDiv.appendChild(newContent);
-      newDiv.style.width=entry.toString()+'%';
+      div_width = entry
+      if (width+div_width > 100) {
+        div_width=98-width;
+      }
+      if (div_width == 0) {
+        div_width=2;
+      }
+      newDiv.style.width=(div_width).toString()+'%';
+      width = width + div_width
       newDiv.style.height='20px';
       newDiv.style.textAlign='center';
       newDiv.style.background=color+' none repeat scroll 0% 0%';
+      newDiv.title=status_line_vals[x];
       //style="width: 11%; background: rgb(239, 49, 137) none repeat scroll 0% 0%;"
       div_parent_elem.appendChild(newDiv)
     }
