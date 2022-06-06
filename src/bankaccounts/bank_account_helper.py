@@ -2,6 +2,7 @@ from django.db.utils import IntegrityError
 from .models import BankAccount, Transaction
 from ofxparse import OfxParser
 import datetime
+import os
 
 def is_a_loan_account(acc_type):
     if acc_type in ['Savings', 'Checking', 'Current', 'Other']:
@@ -28,7 +29,7 @@ def update_balance_for_account(id):
     except BankAccount.DoesNotExist:
         print(f'No bank account with id {id} to update balance')
 
-def upload_transactions(full_file_path, bank_name, file_type, acc_number, account_id):
+def upload_transactions(full_file_path, bank_name, file_type, acc_number, account_id, passwd):
     try:
         ba = BankAccount.objects.get(id=account_id)
         if file_type == 'QUICKEN' and full_file_path.lower().endswith("qfx"):
@@ -64,11 +65,27 @@ def upload_transactions(full_file_path, bank_name, file_type, acc_number, accoun
                         category = 'Groceries'
                     elif 'robinhood' in transaction.payee.lower():
                         category = 'Investment'
+                    elif 'pgande web' in transaction.payee.lower():
+                        category = 'Utilitiy'
                     if not category:
                         print(f'unknown category {transaction.payee.lower()}')
                         category = 'Other'
                     if trans_type == 'Debit' and amount < 0:
                         amount = -1*amount
+                    try:
+                        t = Transaction.objects.get(account=ba,
+                            trans_date=transaction.date,
+                            trans_type=trans_type,
+                            amount=amount,
+                            description=transaction.payee,
+                            category=category,
+                            tran_id=None
+                        )
+                        
+                        t.tran_id = transaction.id
+                        t.save()
+                    except Transaction.DoesNotExist:
+                        pass
                     try:
                         Transaction.objects.create(
                             account=ba,
@@ -76,11 +93,18 @@ def upload_transactions(full_file_path, bank_name, file_type, acc_number, accoun
                             trans_type=trans_type,
                             amount=amount,
                             description=transaction.payee,
-                            category=category
+                            category=category,
+                            tran_id=transaction.id
                         )
                     except IntegrityError as ie:
                         print(f'error {ie} when adding transaction {transaction.date} {amount}')
         else:
-            print(f'unsupported type {file_type}')
+            if file_type == 'PDF' and bank_name == 'IDFC':
+                from .idfc_helper import upload_transactions
+                upload_transactions(full_file_path, ba, passwd)
+            else:
+                print(f'unsupported type {file_type} {bank_name} {acc_number}')
     except BankAccount.DoesNotExist:
         print(f'not uploading transactions from {full_file_path} {bank_name} since no account with number {acc_number}')
+    # remove the file from disk
+    os.remove(full_file_path)
